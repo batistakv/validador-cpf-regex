@@ -1,0 +1,35 @@
+const btnValidar = document.querySelector("#btnValidar");
+const resultado = document.querySelector("#resultado");
+
+btnValidar.addEventListener("click", function () {
+  const cpf = document.querySelector("#cpf").value;
+
+  if (!cpf.match(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/)) {
+    resultado.innerHTML = '<p id="error">CPF inválido</p>';
+    
+  } else {
+    const numeros = cpf.match(/\d/g).map(Number);
+    const primeiroDigito = calcularDigito(numeros.slice(0, 9));
+    const segundoDigito = calcularDigito(numeros.slice(0, 9).concat([primeiroDigito]));
+    const cpfValido = numeros.slice(0, 9).concat([primeiroDigito, segundoDigito]).join("") === cpf.match(/\d/g).join("");
+
+    if (cpfValido) {
+      resultado.innerHTML = '<p>CPF valido</p>';
+    } else {
+      resultado.innerHTML = '<p id="error">CPF invalido</p>';
+    }
+  }
+});
+
+function calcularDigito(numeros) {
+  let soma = 0;
+
+  for (let i = 0; i < numeros.length; i++) {
+    soma += numeros[i] * (numeros.length + 1 - i);
+  }
+
+  const resto = soma % 11;
+  const digito = resto < 2 ? 0 : 11 - resto;
+
+  return digito;
+}
